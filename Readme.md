@@ -9,4 +9,4 @@ The only thing I wasn't satisfied with was that the articles in the PDFs were li
 
 The results are super neat.
 
-Download them on the [releases]() page.
+Download them on the [releases](https://github.com/dufferzafar/geeks-pdf/releases/) page.
