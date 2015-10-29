@@ -1,6 +1,8 @@
 
 # Geeks for Geeks PDFs
 
+![Table of Contents of the Dynamic Programming Book.](screenshot.png)
+
 PDF versions of Geeks for Geeks articles. Compiled into book form.
 
 Big shout out to [@gnijuohz](https://github.com/gnijuohz) for his [awesome work](https://github.com/gnijuohz/geeksforgeeks-as-books/).
