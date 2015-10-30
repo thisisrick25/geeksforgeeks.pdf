@@ -33,7 +33,7 @@ def save_links(content, filename):
         json.dump(links, out, indent=4)
 
 
-def grab_links(urls, filename=None):
+def grab_links(urls, filename=None, combined=False):
     if type(urls) is str:
         urls = [urls]
 
@@ -48,9 +48,11 @@ def grab_links(urls, filename=None):
             link = ques.find("a")
             topic[link.text.strip()] = link['href'].strip()
 
-        # Save topic name too!
-        topic_name = url.split('/')[-2].title()
-        links[topic_name] = topic
+        if combined:
+            links.update(topic)
+        else:
+            topic_name = url.split('/')[-2].title()
+            links[topic_name] = topic
 
     if not filename:
         print(json.dumps(links, indent=4))
