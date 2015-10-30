@@ -26,6 +26,8 @@ def generate_pdf(src, dest):
         "--toc",
         "--latex-engine", "xelatex",
         "-V", "documentclass=report",
+        "-V", "urlcolor=blue",
+        "-V", "linkcolor=blue",
         # "-V", "title="+title,
         "-f", "html",
         src,
