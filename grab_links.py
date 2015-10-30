@@ -1,5 +1,4 @@
-import json
-from links import grab_links
+from links import grab_links, unique_links
 
 
 gate_topics = [
@@ -53,6 +52,23 @@ dp = [
     "http://www.geeksforgeeks.org/tag/dynamic-programming/page/5/",
 ]
 
+graphs = [
+    "http://www.geeksforgeeks.org/category/graph/",
+    "http://www.geeksforgeeks.org/category/graph/page/2/",
+    "http://www.geeksforgeeks.org/category/graph/page/3/",
+    "http://www.geeksforgeeks.org/category/graph/page/4/",
+]
+
+trees = [
+    "http://www.geeksforgeeks.org/category/tree/",
+    "http://www.geeksforgeeks.org/category/tree/page/2/",
+    "http://www.geeksforgeeks.org/category/tree/page/3/",
+    "http://www.geeksforgeeks.org/category/tree/page/4/",
+    "http://www.geeksforgeeks.org/category/tree/page/5/",
+    "http://www.geeksforgeeks.org/category/tree/page/6/",
+]
+
 
 if __name__ == '__main__':
-    grab_links(dp, "DynamicProgramming.json")
+    grab_links(trees, "JSON/Trees.json")
+    unique_links("JSON/Trees.json")

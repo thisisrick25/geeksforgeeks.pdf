@@ -69,5 +69,6 @@ def fix_missing_title():
             _fix_missing_title(ds[topic], os.path.join(root, topic))
 
 if __name__ == '__main__':
+    fix_missing_title()
     map(fix_headings, glob.glob(root_html+"/*.html"))
     map(fix_set_title, glob.glob(root_html+"/*.html"))

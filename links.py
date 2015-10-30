@@ -70,6 +70,3 @@ def unique_links(filename):
 
     with open(filename, "w") as out:
         json.dump(uniq, out, indent=4)
-
-if __name__ == '__main__':
-    unique_links("JSON/Dynamic.json")

@@ -45,6 +45,7 @@ def download(urls, folder):
 # Only download these topics
 some_topics = [
     'Graphs',
+    'Binary Trees',
 ]
 
 # for topic in ds.keys():
