@@ -1,8 +1,28 @@
+#!/usr/bin/env python3.6
+
+"""
+List all links on all pages of a geeks for geeks tag.
+
+Usage: list_links samsung
+
+By default, a JSON is generated, which can be edited by hand.
+"""
+
+import sys
 import json
+
 from collections import OrderedDict
 
-from bs4 import BeautifulSoup
 import requests
+import pyquery
+
+from bs4 import BeautifulSoup
+
+TAG = sys.argv[1]
+TAG_URL = f"https://www.geeksforgeeks.org/tag/{TAG}"
+
+ROOT_JSON = "JSON"
+FNAME = ROOT_JSON + f"{TAG}.json"
 
 
 def print_titles(content):
@@ -33,14 +53,14 @@ def save_links(content, filename):
         json.dump(links, out, indent=4)
 
 
-def grab_links(urls, filename=None, combined=False):
+def fetch_post_links(urls, filename=None, combined=False):
     if type(urls) is str:
         urls = [urls]
 
     links = OrderedDict()
 
     for url in urls:
-        soup = BeautifulSoup(requests.get(url).text)
+        soup = BeautifulSoup(requests.get(url).text, "lxml")
         content = soup.find('div', id="content")
 
         topic = OrderedDict()
@@ -72,3 +92,24 @@ def unique_links(filename):
 
     with open(filename, "w") as out:
         json.dump(uniq, out, indent=4)
+
+
+def list_pages(root_url):
+
+    links = []
+
+    pq = pyquery.PyQuery(url=root_url)
+    if pq('a.last'):
+        last_url = pq('a.last')[0].get('href')
+        last_url = [p for p in last_url.split("/") if p]
+        num_pages = int(last_url[-1])
+
+    for page in range(1, num_pages + 1):
+        links.append(TAG_URL + f"/page/{page}/")
+
+    return links
+
+
+if __name__ == '__main__':
+    fetch_post_links(list_pages(TAG_URL), FNAME, combined=True)
+    unique_links(FNAME)
