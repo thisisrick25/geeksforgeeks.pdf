@@ -12,3 +12,13 @@ The only thing I wasn't satisfied with was that the articles in the PDFs were li
 The results are super neat.
 
 Download them on the [releases](https://github.com/dufferzafar/geeks-pdf/releases/) page.
+
+## Running the code
+
+To download all pages belonging to a particular tag, say `samsung`:
+
+```bash
+py3.6 list_links.py samsung
+py2.7 download_html.py samsung
+py3.6 html_to_pdf.py samsung
+```

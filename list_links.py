@@ -22,7 +22,7 @@ TAG = sys.argv[1]
 TAG_URL = f"https://www.geeksforgeeks.org/tag/{TAG}"
 
 ROOT_JSON = "JSON"
-FNAME = ROOT_JSON + f"{TAG}.json"
+FNAME = ROOT_JSON + f"/{TAG}.json"
 
 
 def print_titles(content):
