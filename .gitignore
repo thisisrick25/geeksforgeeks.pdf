@@ -1,7 +1,12 @@
 Old Stuff/
 Topics/
-\#HTML/
-\#PDF
+HTML/
+PDF/
+TEX/
+
+JSON/*.json
+*.pdf
+*.tex
 
 #####=== Python ===#####
 
