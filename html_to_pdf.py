@@ -20,7 +20,12 @@ def generate_pdf(src, dst=""):
     src = os.path.join(ROOT_HTML, src)
 
     # If source doesn't exist or destination already does
-    if not os.path.isfile(src) or os.path.isfile(dst):
+    if not os.path.isfile(src):
+        print("Source HTML doesn't exist")
+        return
+
+    if os.path.isfile(dst):
+        print("Destination PDF doesn't exist")
         return
 
     title = os.path.basename(src)
