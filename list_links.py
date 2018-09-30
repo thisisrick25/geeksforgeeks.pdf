@@ -72,6 +72,8 @@ def fetch_post_links(urls, filename=None, combined=False):
         topic = OrderedDict()
         for ques in content.find_all("h2", class_="entry-title"):
             link = ques.find("a")
+
+            print(link['href'].strip())
             topic[link.text.strip()] = link['href'].strip()
 
         if combined:
@@ -85,6 +87,9 @@ def fetch_post_links(urls, filename=None, combined=False):
     else:
         with open(filename, "w") as out:
             json.dump(links, out, indent=4)
+
+    print()
+    print("Links written to:", filename)
 
 
 def unique_links(filename):
@@ -123,5 +128,8 @@ def list_pages(root_url):
 
 
 if __name__ == '__main__':
+
+    page_links = list_pages(URL)
+
+    fetch_post_links(page_links, FNAME, combined=True)
     unique_links(FNAME)
-    fetch_post_links(list_pages(URL), FNAME, combined=True)
