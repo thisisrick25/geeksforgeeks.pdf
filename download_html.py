@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -7,11 +7,15 @@ import json
 from collections import OrderedDict
 
 import requests
+import requests_cache
 
 import glean
 
 ROOT = "Topics"
 ROOT_HTML = "HTML"
+
+
+requests_cache.install_cache("geeks")
 
 
 def mkdir(folder):
@@ -21,29 +25,34 @@ def mkdir(folder):
 
 def download(urls, folder):
     mkdir(folder)
+
     cleaned_html = []
 
     for url in urls:
+
         file = os.path.join(folder, url.split('/')[-2] + ".html")
 
         if os.path.isfile(file):
+            print(file)
             with open(file) as inp:
-                cleaned_html.append(inp.read())
-            continue
+                cleaned = inp.read()
+        else:
+            print(url, file)
 
-        print(file)
-        r = requests.get(url)
-        cleaned_html.append(glean.clean(r.content))
+            r = requests.get(url)
+            cleaned = glean.clean(r.content)
 
-        with open(file, 'wb') as out:
-            out.write(glean.clean(r.content))
+            with open(file, 'w') as out:
+                out.write(cleaned)
+
+        cleaned_html.append(cleaned)
 
     cleaned_file = os.path.join(
         ROOT_HTML,
         folder.split('/')[-1] + ".html"
     )
 
-    with open(cleaned_file, 'wb') as out:
+    with open(cleaned_file, 'w') as out:
         out.write("\n".join(cleaned_html))
 
 
@@ -66,16 +75,17 @@ def download_from_json_with_topic_keys(ds):
             download(ds[topic].values(), os.path.join(ROOT, topic))
 
 
-def download_from_json(ds, tag_name):
-    download(ds.values(), os.path.join(ROOT, tag_name))
+def download_from_json(ds, topic):
+    download(ds.values(), os.path.join(ROOT, topic))
 
 
 if __name__ == '__main__':
-    TAG = sys.argv[1]
-    fname = "JSON/%s.json" % TAG
+    fpath = sys.argv[1]
+    fname = os.path.split(fpath)[1]
+    topic = os.path.splitext(fname)[0]
 
-    with open(fname) as inp:
+    with open(fpath) as inp:
         ds = json.load(inp, object_pairs_hook=OrderedDict)
 
     # download_from_json_with_topic_keys(ds)
-    download_from_json(ds, TAG)
+    download_from_json(ds, topic)
