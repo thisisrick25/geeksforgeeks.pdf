@@ -1,23 +1,25 @@
 #!/usr/bin/env python3.6
+"""
+Run Pandoc to convert an HTML to PDF.
+
+Usage: html_to_pdf [options] <src>
+
+Options:
+
+    --tex       Convert to PDF instead of tex
+"""
+
 import os
-import sys
 
 from subprocess import call
 
-ROOT = "Topics"
-ROOT_HTML = "HTML"
+from docopt import docopt
+
+
 ROOT_PDF = "PDF"
-ROOT_JSON = "JSON"
 
 
-def generate_pdf(src, dst=""):
-    if dst:
-        dst = os.path.join(ROOT_PDF, dst)
-    else:
-        # dst = os.path.join(ROOT_PDF, src.replace(".html", ".tex"))
-        dst = os.path.join(ROOT_PDF, src.replace(".html", ".pdf"))
-
-    src = os.path.join(ROOT_HTML, src)
+def generate_pdf(src, dst):
 
     # If source doesn't exist or destination already does
     if not os.path.isfile(src):
@@ -25,7 +27,7 @@ def generate_pdf(src, dst=""):
         return
 
     if os.path.isfile(dst):
-        print("Destination PDF doesn't exist")
+        print("Destination PDF already exists")
         return
 
     title = os.path.basename(src)
@@ -55,9 +57,13 @@ def generate_pdf(src, dst=""):
 
 if __name__ == '__main__':
 
-    # from _data import html_to_pdf_file_names
-    # for file in html_to_pdf_file_names.items():
-    #     generate_pdf(*file)
+    args = docopt(__doc__)
 
-    TAG = sys.argv[1]
-    generate_pdf("%s.html" % TAG)
+    src = os.path.basename(args['<src>'])
+
+    if args['--tex']:
+        dst = src.replace(".html", ".tex")
+    else:
+        dst = src.replace(".html", ".pdf")
+
+    generate_pdf(args['<src>'], os.path.join(ROOT_PDF, dst))
