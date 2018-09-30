@@ -117,3 +117,11 @@ def clean(content):
     result = html.tostring(body_doc).decode("utf-8")
 
     return result
+
+
+if __name__ == '__main__':
+    import requests
+    u = "https://www.geeksforgeeks.org/m-coloring-problem-backtracking-5/"
+    r = requests.get(u)
+    cleaned = clean(r.content)
+    print(cleaned)
