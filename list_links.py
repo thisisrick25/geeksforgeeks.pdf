@@ -8,6 +8,7 @@ By default, a JSON is generated, which can be edited by hand.
 Usage: list_links [options] <URL>
 """
 
+import os
 import sys
 import json
 
@@ -34,29 +35,6 @@ def abort(msg):
 def print_titles(content):
     for title in content.find_all('strong'):
         print(title.text.strip())
-
-
-def save_links(content, filename):
-    # DS/Algo
-    # url = "http://www.geeksforgeeks.org/data-structures/"
-    # url = "http://www.geeksforgeeks.org/fundamentals-of-algorithms/"
-    # soup = BeautifulSoup(requests.get(url).text)
-    # content = soup.find('div', class_="entry-content")
-
-    links = []
-
-    for ul in content.find_all('ul')[1:]:
-        topic = OrderedDict()
-
-        for link in ul.find_all('a'):
-            if 'geeksquiz' not in link.get('href'):
-                topic[link.text.strip()] = link['href'].strip()
-
-        if topic:
-            links.append(topic)
-
-    with open(filename, "w") as out:
-        json.dump(links, out, indent=4)
 
 
 def fetch_post_links(urls, filename=None, combined=False):
@@ -129,7 +107,10 @@ def list_pages(root_url):
 
 if __name__ == '__main__':
 
-    page_links = list_pages(URL)
-
-    fetch_post_links(page_links, FNAME, combined=True)
-    unique_links(FNAME)
+    if os.path.isfile(FNAME):
+        unique_links(FNAME)
+        abort("JSON file already exists: " + FNAME)
+    else:
+        page_links = list_pages(URL)
+        fetch_post_links(page_links, FNAME, combined=True)
+        unique_links(FNAME)
