@@ -3,9 +3,9 @@
 """
 List all links on all pages of a geeks for geeks tag.
 
-Usage: list_links samsung
-
 By default, a JSON is generated, which can be edited by hand.
+
+Usage: list_links [options] <URL>
 """
 
 import sys
@@ -18,11 +18,17 @@ import pyquery
 
 from bs4 import BeautifulSoup
 
-TAG = sys.argv[1]
-TAG_URL = f"https://www.geeksforgeeks.org/tag/{TAG}"
+ROOT_JSON = "JSON/"
 
-ROOT_JSON = "JSON"
-FNAME = ROOT_JSON + f"/{TAG}.json"
+URL = sys.argv[1].rstrip('/')
+TAG = URL.split('/')[-1].title()
+
+FNAME = ROOT_JSON + f"{TAG}.json"
+
+
+def abort(msg):
+    print(msg, file=sys.stderr)
+    exit(1)
 
 
 def print_titles(content):
@@ -97,19 +103,25 @@ def unique_links(filename):
 def list_pages(root_url):
 
     links = []
+    num_pages = 0
 
-    pq = pyquery.PyQuery(url=root_url)
-    if pq('a.last'):
-        last_url = pq('a.last')[0].get('href')
-        last_url = [p for p in last_url.split("/") if p]
-        num_pages = int(last_url[-1])
+    try:
+        pq = pyquery.PyQuery(url=root_url)
+    except:  # noqa
+        abort("URL doesn't exist.")
+
+    if pq('.pages'):
+        num_pages = int(pq('.pages')[0].text.split()[-1])
+
+    if not num_pages:
+        abort("No pages!")
 
     for page in range(1, num_pages + 1):
-        links.append(TAG_URL + f"/page/{page}/")
+        links.append(URL + f"/page/{page}/")
 
     return links
 
 
 if __name__ == '__main__':
-    fetch_post_links(list_pages(TAG_URL), FNAME, combined=True)
     unique_links(FNAME)
+    fetch_post_links(list_pages(URL), FNAME, combined=True)
