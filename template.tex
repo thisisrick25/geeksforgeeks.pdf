@@ -1,19 +1,20 @@
-\documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$babel-lang$,$endif$$if(papersize)$$papersize$,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{$documentclass$}
 
 % Removes the "Chapter.." from chapter titles.
 % \usepackage{titlesec}
 % \titleformat{\chapter}[display]
 %   {\normalfont\bfseries}{}{0pt}{\Huge}
 
+\documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$lang$,$endif$$if(papersize)$$papersize$,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{$documentclass$}
+
 $if(fontfamily)$
-  \usepackage[$fontfamilyoptions$]{$fontfamily$}
+    \usepackage{$fontfamily$}
 $else$
-  \usepackage{lmodern}
+    \usepackage{lmodern}
 $endif$
 
 $if(linestretch)$
-  \usepackage{setspace}
-  \setstretch{$linestretch$}
+    \usepackage{setspace}
+    \setstretch{$linestretch$}
 $endif$
 
 \usepackage{amssymb,amsmath}
@@ -23,16 +24,18 @@ $endif$
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[$if(fontenc)$$fontenc$$else$T1$endif$]{fontenc}
   \usepackage[utf8]{inputenc}
-  $if(euro)$
-    \usepackage{eurosym}
-  $endif$
+    $if(euro)$
+      \usepackage{eurosym}
+    $endif$
+
 \else % if luatex or xelatex
   \ifxetex
     \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
   \else
     \usepackage{fontspec}
   \fi
-  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
   \newcommand{\euro}{€}
 
   $if(mainfont)$
@@ -60,6 +63,7 @@ $endif$
 \usepackage{microtype}
 \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
+
 $if(geometry)$
 \usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
 $endif$
@@ -67,6 +71,7 @@ $endif$
 \PassOptionsToPackage{usenames,dvipsnames}{color} % color is loaded by hyperref
 \hypersetup{breaklinks=true,
             unicode=true,
+            bookmarks=true,
             $if(title-meta)$
               pdftitle={$title-meta$},
             $endif$
@@ -79,18 +84,27 @@ $endif$
             $if(keywords)$
               pdfkeywords={$keywords$},
             $endif$
-            pagebackref,
-            bookmarksopen,
+            % pagebackref,
+            % bookmarksopen,
             bookmarksnumbered,
             colorlinks=true,
-            citecolor=$if(citecolor)$$citecolor$$else$black$endif$,
-            urlcolor=$if(urlcolor)$$urlcolor$$else$black$endif$,
-            linkcolor=$if(linkcolor)$$linkcolor$$else$black$endif$,
+            citecolor=$if(citecolor)$$citecolor$$else$blue$endif$,
+            urlcolor=$if(urlcolor)$$urlcolor$$else$blue$endif$,
+            linkcolor=$if(linkcolor)$$linkcolor$$else$magenta$endif$,
             pdfborder={0 0 0}
             $if(hidelinks)$,hidelinks$endif$}
 
 \urlstyle{same}  % don't use monospace font for urls
-
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\pagenumbering{arabic}
+\lhead{\itshape $title$}
+\chead{}
+\rhead{\itshape{\nouppercase{\leftmark}}}
+\lfoot{}
+% \lfoot{v $version$}
+\cfoot{}
+\rfoot{\thepage}
 $if(lang)$
   \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
     \usepackage[shorthands=off,$for(babel-otherlangs)$$babel-otherlangs$$sep$,$endfor$,main=$babel-lang$]{babel}
@@ -160,85 +174,65 @@ $if(strikeout)$
   \pdfstringdefDisableCommands{\renewcommand{\sout}{}}
 $endif$
 
-$if(indent)$
-$else$
-  \setlength{\parindent}{0pt}
-  \setlength{\parskip}{6pt plus 2pt minus 1pt}
-$endif$
-
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
 \setlength{\emergencystretch}{3em}  % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
 $if(numbersections)$
-  \setcounter{secnumdepth}{5}
+    \setcounter{secnumdepth}{5}
 $else$
-  \setcounter{secnumdepth}{0}
+    \setcounter{secnumdepth}{0}
 $endif$
 
-$if(dir)$
-  \ifxetex
-    % load bidi as late as possible as it modifies e.g. graphicx
-    $if(latex-dir-rtl)$
-    \usepackage[RTLdocument]{bidi}
-    $else$
-    \usepackage{bidi}
-    $endif$
-  \fi
-  \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
-    \TeXXeTstate=1
-    \newcommand{\RL}[1]{\beginR #1\endR}
-    \newcommand{\LR}[1]{\beginL #1\endL}
-    \newenvironment{RTL}{\beginR}{\endR}
-    \newenvironment{LTR}{\beginL}{\endL}
-  \fi
+$if(verbatim-in-note)$
+    \VerbatimFootnotes % allows verbatim text in footnotes
 $endif$
 
 $if(title)$
-  \title{$title$$if(subtitle)$\\\vspace{0.5em}{\large $subtitle$}$endif$}
+    \title{$title$$if(subtitle)$\\\vspace{0.5em}{\large $subtitle$}$endif$}
 $endif$
 
 $if(author)$
-  \author{$for(author)$$author$$sep$ \and $endfor$}
+    \author{$for(author)$$author$$sep$ \and $endfor$}
 $endif$
 
 \date{$date$}
 
 $for(header-includes)$
-  $header-includes$
+$header-includes$
 $endfor$
 
-$if(subparagraph)$
-$else$
-  % Redefines (sub)paragraphs to behave more like sections
-  \ifx\paragraph\undefined\else
-    \let\oldparagraph\paragraph
-    \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
-  \fi
-
-  \ifx\subparagraph\undefined\else
-    \let\oldsubparagraph\subparagraph
-    \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
-  \fi
-$endif$
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
 
 \begin{document}
-  $if(title)$
-  \maketitle
-  $endif$
 
-  $if(abstract)$
-    \begin{abstract}
-      $abstract$
-    \end{abstract}
-  $endif$
+$if(title)$
+    \maketitle
+$endif$
 
-  $for(include-before)$
-    $include-before$
-  $endfor$
+$if(abstract)$
+\begin{abstract}
+    $abstract$
+\end{abstract}
+$endif$
 
-  $if(toc)$
-  {
+$for(include-before)$
+$include-before$
+$endfor$
+
+
+$if(toc)$
+{
     \hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$black$endif$}
     \setcounter{tocdepth}{$toc-depth$}
 
@@ -246,39 +240,38 @@ $endif$
     \addtocontents{toc}{\protect{\pdfbookmark[0]{\contentsname}{toc}}}
 
     \tableofcontents
-  }
-  $endif$
+}
+$endif$
 
-  $if(lot)$
+$if(lot)$
     \listoftables
-  $endif$
+$endif$
 
-  $if(lof)$
+$if(lof)$
     \listoffigures
-  $endif$
+$endif$
 
-  $body$
+$body$
 
-  $if(natbib)$
+$if(natbib)$
     $if(bibliography)$
-      $if(biblio-title)$
-        $if(book-class)$
-          \renewcommand\bibname{$biblio-title$}
-        $else$
-          \renewcommand\refname{$biblio-title$}
+        $if(biblio-title)$
+            $if(book-class)$
+              \renewcommand\bibname{$biblio-title$}
+            $else$
+              \renewcommand\refname{$biblio-title$}
+            $endif$
+            \bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
         $endif$
-      $endif$
-
-      \bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
     $endif$
-  $endif$
+$endif$
 
-  $if(biblatex)$
+$if(biblatex)$
     \printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
-  $endif$
+$endif$
 
-  $for(include-after)$
-    $include-after$
-  $endfor$
+$for(include-after)$
+$include-after$
+$endfor$
 
 \end{document}
