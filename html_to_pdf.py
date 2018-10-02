@@ -35,23 +35,35 @@ def generate_pdf(src, dst):
 
     command = [
         "/usr/bin/pandoc",
-        # "--template=template.tex",
-        "--template=jgm.tex",
-        "--toc",
+        "--quiet",
+
         "--pdf-engine", "xelatex",
-        "-V" "geometry:margin=1.5in",
-        # "-V" "geometry:papersize=a3paper",
+
+        "--toc",
+
+        "--template=template.tex",
+        "-V", "geometry:margin=1.5in",
         "-V", "documentclass=report",
+        # "-V" "geometry:papersize=a3paper",
+
         "-V", "urlcolor=blue",
         "-V", "linkcolor=blue",
+
         # "-V", "title="+title,
-        "-f", "html",
+
         src,
         "-o", dst,
     ]
 
-    # print(" ".join(command))
-    print(command[-1])
+    # Run in verbose mode when converting from a .tex to .pdf
+    # because one would only do this when shit has gone wrong
+    if src.endswith(".tex"):
+        command[1] = "--verbose"
+        print(" ".join(command))
+    else:
+        print(command[-1])
+
+    # Do it!
     call(command)
 
 
@@ -64,6 +76,6 @@ if __name__ == '__main__':
     if args['--tex']:
         dst = src.replace(".html", ".tex")
     else:
-        dst = src.replace(".html", ".pdf")
+        dst = src.replace(".html", ".pdf").replace(".tex", ".pdf")
 
     generate_pdf(args['<src>'], os.path.join(ROOT_PDF, dst))
