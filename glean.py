@@ -52,6 +52,7 @@ def clean(content):
         body_doc.xpath("//div[@id='page']") +
         body_doc.xpath("//form[@id='interview_experience_form']") +
         body_doc.xpath("//div[@id='author']") +
+        body_doc.xpath("//div[@id='video']") +
         body_doc.xpath("//div[@id='share-buttons']") +
         body_doc.xpath("//div[@id='ide_link']") +
         body_doc.xpath("//div[@id='disqus_thread']") +
@@ -67,7 +68,7 @@ def clean(content):
         body_doc.xpath("//h1[@class='entry-title']") +
         body_doc.xpath("//hr") +
         body_doc.xpath("//h3") +
-        body_doc.xpath("//h2")
+        body_doc.xpath("//h2[not(@class='tabtitle')]")
     )
 
     for tag in bad_tags:
@@ -82,7 +83,7 @@ def clean(content):
         parent.getparent().remove(parent)
 
     # Convert all H1 language tags to p tags
-    for lang_h1 in body_doc.xpath("//h1[@class='tabtitle']"):
+    for lang_h1 in body_doc.xpath("//h2[@class='tabtitle']"):
         lang_p = '<p><strong>%s</strong></p>' % lang_h1.text_content()
         lang_h1.addnext(lxml.etree.XML(lang_p))
         lang_h1.getparent().remove(lang_h1)
