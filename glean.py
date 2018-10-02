@@ -10,7 +10,7 @@ import lxml.html as html
 from readability import Document
 
 
-def clean(content):
+def clean(content, title=None):
     content = content.decode("utf-8")
 
     try:
@@ -30,16 +30,16 @@ def clean(content):
 
     # Get title so it can be added as an H1 tag, but remove it from
     # the html itself - so that Pandoc doesn't use it
-    title = html_doc.find('.//title')
-    title.getparent().remove(title)
-    title = title.text_content()
+    if not title:
+        title = html_doc.find('.//title')
+        title.getparent().remove(title)
+        title = title.text_content()
+        title = title[:title.rfind('-')]
 
     # Add in the title
     if "<body><h1>" not in reconstructed_body:
         reconstructed_body = reconstructed_body.replace(
-            "<body>",
-            "<body><h1>" +
-            title[:title.rfind('-')] + "</h1>"
+            "<body>", "<body><h1>" + title + "</h1>"
         )
 
     # Remove stuff that readability didn't remove

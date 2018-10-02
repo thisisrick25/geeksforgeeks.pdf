@@ -28,7 +28,7 @@ def download(urls, folder):
 
     cleaned_html = []
 
-    for url in urls:
+    for title, url in urls.items():
 
         file = os.path.join(folder, url.split('/')[-2] + ".html")
 
@@ -40,7 +40,7 @@ def download(urls, folder):
             print(url, file)
 
             r = requests.get(url)
-            cleaned = glean.clean(r.content)
+            cleaned = glean.clean(r.content, title)
 
             with open(file, 'w') as out:
                 out.write(cleaned)
@@ -75,10 +75,6 @@ def download_from_json_with_topic_keys(ds):
             download(ds[topic].values(), os.path.join(ROOT, topic))
 
 
-def download_from_json(ds, topic):
-    download(ds.values(), os.path.join(ROOT, topic))
-
-
 if __name__ == '__main__':
     fpath = sys.argv[1]
     fname = os.path.split(fpath)[1]
@@ -86,6 +82,6 @@ if __name__ == '__main__':
 
     with open(fpath) as inp:
         ds = json.load(inp, object_pairs_hook=OrderedDict)
+        download(ds, os.path.join(ROOT, topic))
 
     # download_from_json_with_topic_keys(ds)
-    download_from_json(ds, topic)
