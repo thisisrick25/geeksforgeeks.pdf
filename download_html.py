@@ -1,13 +1,24 @@
 #!/usr/bin/env python3
+"""
+Download HTML pages from Geeks for Geeks and clean them.
+
+Usage: download_html [options] <json>
+
+Options:
+
+    -f --force       Overwrite destination
+"""
+
 
 import os
-import sys
 import json
 
 from collections import OrderedDict
 
 import requests
 import requests_cache
+
+from docopt import docopt
 
 import glean
 
@@ -23,16 +34,17 @@ def mkdir(folder):
         os.mkdir(folder)
 
 
-def download(urls, folder):
+def download(urls, folder, force=False):
     mkdir(folder)
 
     cleaned_html = []
 
     for title, url in urls.items():
 
-        file = os.path.join(folder, url.split('/')[-2] + ".html")
+        file = os.path.join(folder,
+                            url.split('/')[-2] + ".html")
 
-        if os.path.isfile(file):
+        if not force and os.path.isfile(file):
             print(file)
             with open(file) as inp:
                 cleaned = inp.read()
@@ -42,11 +54,13 @@ def download(urls, folder):
             r = requests.get(url)
             cleaned = glean.clean(r.content, title)
 
+            # Write content to individual files
             with open(file, 'w') as out:
                 out.write(cleaned)
 
         cleaned_html.append(cleaned)
 
+    # Write all content to a single file as well
     cleaned_file = os.path.join(
         ROOT_HTML,
         folder.split('/')[-1] + ".html"
@@ -56,32 +70,19 @@ def download(urls, folder):
         out.write("\n".join(cleaned_html))
 
 
-def download_from_json_with_topic_keys(ds):
-
-    # Only download these topics
-    # some_topics = [
-    #     'Graphs',
-    #     'Binary Trees',
-    # ]
-
-    for topic in ds.keys():
-        # for topic in some_topics:
-        if topic in ['Advanced Data Structures']:
-            urls = []
-            for sub_topic in ds[topic]:
-                urls += ds[topic][sub_topic].values()
-            download(urls, os.path.join(ROOT, topic))
-        else:
-            download(ds[topic].values(), os.path.join(ROOT, topic))
-
-
 if __name__ == '__main__':
-    fpath = sys.argv[1]
+
+    args = docopt(__doc__)
+
+    fpath = args['<json>']
     fname = os.path.split(fpath)[1]
     topic = os.path.splitext(fname)[0]
 
     with open(fpath) as inp:
-        ds = json.load(inp, object_pairs_hook=OrderedDict)
-        download(ds, os.path.join(ROOT, topic))
+        input_json = json.load(inp, object_pairs_hook=OrderedDict)
 
-    # download_from_json_with_topic_keys(ds)
+    download(
+        urls=input_json,
+        folder=os.path.join(ROOT, topic),
+        force=args["--force"],
+    )
