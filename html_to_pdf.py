@@ -6,7 +6,8 @@ Usage: html_to_pdf [options] <src>
 
 Options:
 
-    --tex       Convert to PDF instead of tex
+    -t --tex         Convert to PDF instead of tex
+    -f --force       Overwrite destination
 """
 
 import os
@@ -19,15 +20,15 @@ from docopt import docopt
 ROOT_PDF = "PDF"
 
 
-def generate_pdf(src, dst):
+def generate_pdf(src, dst, force=False):
 
     # If source doesn't exist or destination already does
     if not os.path.isfile(src):
         print("Source HTML doesn't exist")
         return
 
-    if os.path.isfile(dst):
-        print("Destination PDF already exists")
+    if not force and os.path.isfile(dst):
+        print("Destination already exists.")
         return
 
     title = os.path.basename(src)
@@ -78,4 +79,8 @@ if __name__ == '__main__':
     else:
         dst = src.replace(".html", ".pdf").replace(".tex", ".pdf")
 
-    generate_pdf(args['<src>'], os.path.join(ROOT_PDF, dst))
+    generate_pdf(
+        src=args['<src>'],
+        dst=os.path.join(ROOT_PDF, dst),
+        force=args["--force"],
+    )
