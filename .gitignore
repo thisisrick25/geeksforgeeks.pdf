@@ -4,9 +4,12 @@ HTML/
 PDF/
 TEX/
 
-JSON/*.json
+# These are uploaded on Releases page
 *.pdf
 *.tex
+
+# Requests cache
+*.sqlite
 
 #####=== Python ===#####
 
