@@ -6,6 +6,14 @@
 
 \documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$lang$,$endif$$if(papersize)$$papersize$,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{$documentclass$}
 
+% https://tex.stackexchange.com/questions/64115/table-of-contents-chapter-number-width
+\usepackage{tocloft}
+\makeatletter
+\renewcommand{\numberline}[1]{%
+  \@cftbsnum #1\@cftasnum~\@cftasnumb%
+}
+\makeatother
+
 $if(fontfamily)$
     \usepackage{$fontfamily$}
 $else$
