@@ -42,3 +42,51 @@ Things will work only if you're really lucky. This project has taught me how fra
     - In which case, you should convert the html to tex
     - Then run pandoc on the tex file in verbose mode
     - and manually fix the tex file
+
+## Topic URLs
+
+Here is a list of Topic URLs that have I've fetched:
+
+(You can download these PDFs from the releases page :smile:)
+
+**Algorithms**
+
+* https://www.geeksforgeeks.org/category/algorithm/greedy/
+* https://www.geeksforgeeks.org/category/algorithm/bit-magic/
+* https://www.geeksforgeeks.org/category/algorithm/divide-and-conquer/
+* https://www.geeksforgeeks.org/category/algorithm/geometric/
+* https://www.geeksforgeeks.org/category/algorithm/combinatorial/
+* https://www.geeksforgeeks.org/category/algorithm/randomized/
+* https://www.geeksforgeeks.org/category/algorithm/searching/
+* https://www.geeksforgeeks.org/category/algorithm/sorting/
+* https://www.geeksforgeeks.org/category/algorithm/recursion/
+* https://www.geeksforgeeks.org/category/algorithm/analysis/
+* https://www.geeksforgeeks.org/category/algorithm/game-theory/
+* https://www.geeksforgeeks.org/category/algorithm/pattern-searching/
+* https://www.geeksforgeeks.org/category/algorithm/branch-and-bound/
+
+* https://www.geeksforgeeks.org/category/backtracking/
+* https://www.geeksforgeeks.org/tag/dynamic-programming/
+
+**Data Strucutres**
+
+* https://www.geeksforgeeks.org/category/graph/
+* https://www.geeksforgeeks.org/category/tree/
+* https://www.geeksforgeeks.org/category/data-structures/hash/
+* https://www.geeksforgeeks.org/category/data-structures/matrix/
+* https://www.geeksforgeeks.org/category/data-structures/heap/
+* https://www.geeksforgeeks.org/category/data-structures/stack/
+* https://www.geeksforgeeks.org/category/data-structures/queue/
+* https://www.geeksforgeeks.org/category/data-structures/linked-list/
+* https://www.geeksforgeeks.org/category/data-structures/c-strings/
+
+* https://www.geeksforgeeks.org/category/data-structures/c-arrays/
+* https://www.geeksforgeeks.org/category/data-structures/binary-search-tree/
+
+**Companies**
+
+* https://www.geeksforgeeks.org/tag/microsoft/
+* https://www.geeksforgeeks.org/tag/samsung/
+* https://www.geeksforgeeks.org/tag/ibm/
+* https://www.geeksforgeeks.org/tag/uber/
+* https://www.geeksforgeeks.org/tag/appdynamics/
