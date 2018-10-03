@@ -97,7 +97,8 @@ def list_pages(root_url):
         num_pages = int(pq('.pages')[0].text.split()[-1])
 
     if not num_pages:
-        abort("No pages!")
+        num_pages = 1
+        print("Only 1 page!")
 
     for page in range(1, num_pages + 1):
         links.append(URL + f"/page/{page}/")
