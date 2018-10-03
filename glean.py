@@ -1,13 +1,18 @@
 """Use boilerpipy + LXML to clean downloaded html files."""
 
-import sys
-
 from html import escape as html_escape
 
 import lxml.etree
 import lxml.html as html
 from lxml.html.clean import Cleaner
 
+
+def remove_xpaths(elem, xpaths, parent=False):
+    for path in xpaths:
+        for tag in elem.xpath(path):
+            if parent:
+                tag = tag.getparent()
+            tag.getparent().remove(tag)
 
 
 def clean(content, title=None):
@@ -37,55 +42,68 @@ def clean(content, title=None):
         )
 
     # Remove stuff that readability didn't remove
-    body_doc = html.fromstring(reconstructed_body).find('body')
     doc = html.fromstring(reconstructed_body)
 
-    bad_tags = (
     # Use lxml's cleaner to remove all useless tags
-        body_doc.xpath("//button") +
     # (currently, this removes styles, even when not asked to)
     cleaner = Cleaner(
         scripts=True, javascript=True, comments=True,
         links=True, forms=True, annoying_tags=True,
         style=True, inline_style=False,
-        body_doc.xpath("//nav") +
-        body_doc.xpath("//footer") +
-        body_doc.xpath("//div[@id='page']") +
-        body_doc.xpath("//form[@id='interview_experience_form']") +
-        body_doc.xpath("//div[@id='author']") +
-        body_doc.xpath("//div[@id='video']") +
-        body_doc.xpath("//div[@id='share-buttons']") +
-        body_doc.xpath("//div[@id='ide_link']") +
-        body_doc.xpath("//div[@id='disqus_thread']") +
-        body_doc.xpath("//div[@id='secondary']") +
-        body_doc.xpath("//div[@id='personalNoteDiv']") +
-        body_doc.xpath("//div[@id='practiceLinkDiv']") +
-        body_doc.xpath("//div[@class='leftSideBarParent']") +
-        body_doc.xpath("//div[@class='author_info_box']") +
-        body_doc.xpath("//div[@class='plugins']") +
-        body_doc.xpath("//div[@class='no-p-tag']") +
-        body_doc.xpath("//div[@class='comments-main']") +
-        body_doc.xpath("//ins[@class='adsbygoogle']") +
-        body_doc.xpath("//h1[@class='entry-title']") +
-        body_doc.xpath("//hr") +
-        body_doc.xpath("//h3") +
-        body_doc.xpath("//h2[not(@class='tabtitle')]")
     )
     doc = cleaner.clean_html(doc)
 
-    for tag in bad_tags:
     body_doc = doc.find('body')
-        tag.getparent().remove(tag)
 
-    # Remove tags that start with some text - along with their parent
-    bad_tags = (
-        body_doc.xpath('//h1[starts-with(text(),"Recommended")]')
-    )
-    for tag in bad_tags:
-        parent = tag.getparent()
-        parent.getparent().remove(parent)
+    bad_body_xpaths = [
+        "//nav",
+        "//footer",
+        "//button",
 
-    # Convert all H1 language tags to p tags
+        "//form[@id='interview_experience_form']",
+
+        "//div[@id='page']",
+        "//div[@id='author']",
+        "//div[@id='video']",
+        "//div[@id='share-buttons']",
+        "//div[@id='ide_link']",
+        "//div[@id='disqus_thread']",
+        "//div[@id='secondary']",
+        "//div[@id='personalNoteDiv']",
+        "//div[@id='practiceLinkDiv']",
+
+        "//div[@class='leftSideBarParent']",
+        "//div[@class='author_info_box']",
+        "//div[@class='plugins']",
+        "//div[@class='no-p-tag']",
+        "//div[@class='comments-main']",
+
+        "//ins[@class='adsbygoogle']",
+
+        "//h3",
+        "//h1[@class='entry-title']",
+        "//h2[not(@class='tabtitle')]",
+
+        "//hr",
+
+        # This requires XPath 2.0
+        # "//a[ends-with(@href, 'sudo-gate')]",
+        "//a[contains(@href, 'sudo-gate')]",
+
+        "//p[contains(., 'contribute@geeksforgeeks.org')]",
+        "//p[starts-with(., 'Please write comments if you find')]",
+    ]
+
+    bad_parent_xpaths = [
+        "//h2[starts-with(text(), 'Recommended')]",
+    ]
+
+    # This one has to be removed first, so h2's parent can die!
+    remove_xpaths(body_doc, bad_parent_xpaths, parent=True)
+    remove_xpaths(body_doc, bad_body_xpaths)
+
+    # Convert all language tags to p tags
+    # H1 is used only for post title
     for lang_h1 in body_doc.xpath("//h2[@class='tabtitle']"):
         lang_p = '<p><strong>%s</strong></p>' % lang_h1.text_content()
         lang_h1.addnext(lxml.etree.XML(lang_p))
