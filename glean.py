@@ -6,27 +6,21 @@ from html import escape as html_escape
 
 import lxml.etree
 import lxml.html as html
+from lxml.html.clean import Cleaner
 
-from readability import Document
 
 
 def clean(content, title=None):
     content = content.decode("utf-8")
 
-    try:
-        # Use Python Readability to clean up the HTML
-        doc = Document(content)
-        article = doc.get_clean_html()
-    except:  # noqa
-        print("Error cleaning up the html.")
-        sys.exit(1)
-
+    # We're parsing the content html twice!
+    # TODO: This one can probably be removed
     # LXML parsing is used to get title and meta head info from HTML
     html_doc = html.fromstring(content,
                                parser=html.HTMLParser(encoding="utf-8"))
     head_doc = html_doc.find('head')
 
-    reconstructed_body = "<html><body>" + article + "</body></html>"
+    reconstructed_body = "<html><body>" + content + "</body></html>"
 
     # Get title so it can be added as an H1 tag, but remove it from
     # the html itself - so that Pandoc doesn't use it
@@ -44,9 +38,16 @@ def clean(content, title=None):
 
     # Remove stuff that readability didn't remove
     body_doc = html.fromstring(reconstructed_body).find('body')
+    doc = html.fromstring(reconstructed_body)
 
     bad_tags = (
+    # Use lxml's cleaner to remove all useless tags
         body_doc.xpath("//button") +
+    # (currently, this removes styles, even when not asked to)
+    cleaner = Cleaner(
+        scripts=True, javascript=True, comments=True,
+        links=True, forms=True, annoying_tags=True,
+        style=True, inline_style=False,
         body_doc.xpath("//nav") +
         body_doc.xpath("//footer") +
         body_doc.xpath("//div[@id='page']") +
@@ -70,8 +71,10 @@ def clean(content, title=None):
         body_doc.xpath("//h3") +
         body_doc.xpath("//h2[not(@class='tabtitle')]")
     )
+    doc = cleaner.clean_html(doc)
 
     for tag in bad_tags:
+    body_doc = doc.find('body')
         tag.getparent().remove(tag)
 
     # Remove tags that start with some text - along with their parent
