@@ -31,7 +31,7 @@ requests_cache.install_cache("geeks")
 
 def mkdir(folder):
     if not os.path.isdir(folder):
-        os.mkdir(folder)
+        os.makedirs(folder)
 
 
 def download(urls, folder, force=False):
@@ -61,6 +61,7 @@ def download(urls, folder, force=False):
         cleaned_html.append(cleaned)
 
     # Write all content to a single file as well
+    mkdir(ROOT_HTML)
     cleaned_file = os.path.join(
         ROOT_HTML,
         folder.split('/')[-1] + ".html"
