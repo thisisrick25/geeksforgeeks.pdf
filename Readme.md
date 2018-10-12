@@ -30,17 +30,17 @@ I started in 2015 from [@gnijuohz's repo](https://github.com/gnijuohz/geeksforge
 
 2. Create a JSON containing links of all posts on that topic
 
-    * `py3.6 list_links.py https://www.geeksforgeeks.org/tag/samsung/`
+    * `python3.6 list_links.py https://www.geeksforgeeks.org/tag/samsung/`
 
     * This JSON can now be edited by hand, to remove some links, re-order them etc.
 
 3. Now fetch the actual posts
 
-    * `py3.6 download_html.py JSON/Samsung.json`
+    * `python3.6 download_html.py JSON/Samsung.json`
 
 4. Finally, convert the HTML to a PDF using Pandoc
 
-    * `py3.6 html_to_pdf.py HTML/Samsung.html`
+    * `python3.6 html_to_pdf.py HTML/Samsung.html`
 
 Things will work only if you're really lucky. This project has taught me how fragile my HTML to PDF pipeline really is. There's just too many things that can go wrong.
 
