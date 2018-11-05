@@ -157,6 +157,7 @@ $endif$
 
 $if(tables)$
   \usepackage{longtable,booktabs}
+  \def\tabularnewline{\\}  % Fixes error of misplaced noalign
 $endif$
 
 $if(graphics)$
@@ -180,6 +181,10 @@ $if(strikeout)$
   \usepackage[normalem]{ulem}
   % avoid problems with \sout in headers with hyperref:
   \pdfstringdefDisableCommands{\renewcommand{\sout}{}}
+$endif$
+
+$if(toc)$
+  \usepackage{etoc}
 $endif$
 
 \setlength{\parindent}{0pt}
@@ -244,10 +249,17 @@ $if(toc)$
     \hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$black$endif$}
     \setcounter{tocdepth}{$toc-depth$}
 
+    {
+      \renewcommand{\contentsname}{Contents Overview}
+      \etocsetnexttocdepth{section}
+      \addcontentsline{toc}{section}{\contentsname}
+      \tableofcontents
+    }
+    \cleardoublepage
     % Add an entry for Contents themselves.
-    \addtocontents{toc}{\protect{\pdfbookmark[0]{\contentsname}{toc}}}
+    \addcontentsline{toc}{section}{\contentsname}
 
-    \tableofcontents
+    \tableofcontents  % For some reason the toc prints twice
 }
 $endif$
 
